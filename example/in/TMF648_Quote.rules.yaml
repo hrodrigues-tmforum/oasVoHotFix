@@ -1,0 +1,215 @@
+## API rule definitions
+rulesVersion: 1.0.0
+api:
+  shortName: Quote
+  name: Quote
+  tmfId: TMF648
+  description: "**TMF API Reference : TMF 648 - Quote **\n\n** September 2021**\n\nThe Quote API provides a standardized mechanism for placing a quote with all of the necessary parameters. The API consists of a simple set of operations that interact with CRM/Quote/Pricing Negotiation systems in a consistent manner. A Quote is created based on product offering(s) that is(are) defined in a catalog. The quote identifies the product or set of products that are available to a customer for pricing request, and includes product characteristics.\n\nThe Quote references the product offer(s) which (future) customer request pricing.\nQuote resource features authorization subclass to manage special pricing UC requiring authorization tracking management\n\n**Quote resource**\nA Quote can be used to request pricing between a customer and a service provider or between a service provider and a partner and vice versa. Main quote attributes are its identifier, state, priority, related dates (requested, expected, valid, completion, etc.), related parties and quote items. Main Quote Items attributes are the discribed offering and product characteristics with the related action to be performed (e.g. add, change or delete the products), location information, and product characteristics.\n\nQuote API performs the following operations on Quote :\n\n- Retrieval of a quote or a collection of quotes depending on filter criteria\n- Partial update of a quote (including updating rules)\n- Creation of a quote (including default values and creation rules)\n- Deletion of quote (for administration purposes)\n- Notification of events on quote.\n\nCopyright © TM Forum 2021. All Rights Reserved\n\n"
+  hostUrl: https://serverRoot
+  basePath: /tmf-api/quoteManagement/v5/
+  version: "5.0.0"
+  resources:
+    - name: Quote
+      schema: "schemas/Tmf/Customer/Quote.schema.json#Quote"
+      supportedHttpMethods:
+        GET:
+          security:
+            - OpenID: [read1, write1]
+          required: true
+          examples:
+            - name: "retrieveById"
+              content-type: "application/json"
+              description: "Retrieve a quote from its identifier - only a subset of quote attributes (as defined in the API) are used in this example"
+              response:
+                file: "./documentation/operation-samples/Quote_retrieve_1_response.sample.json"
+                description: "Retrieve a quote from its identifier - only a subset of quote attributes (as defined in the API) are used in this example."
+            - name: "RetrieveQuoteByList"
+              isCollection: true
+              content-type: "application/json"
+              description: "Retrieve a list of quote(s) - Complete quote representation are sent back."
+              response:
+                file: "./documentation/operation-samples/Quote_list_response.sample.json"
+                description: "Retrieve a list of quote(s) - Complete quote representation are sent back."
+            - name: "RetrieveQuoteByListwithFieldsSelection"
+              isCollection: true
+              content-type: "application/json"
+              description: "Retrieve a list of quote(s) with filter selection - only few attributes are retrieved for each quote."
+              response:
+                file: "./documentation/operation-samples/Quote_list_filter_response.sample.json"
+                description: "Retrieve a list of quote(s) with filter selection - only few attributes are retrieved for each quote."
+        DELETE:
+          required: true
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+              - creationDate
+              - state
+              - effectiveQuoteCompletionDate
+              - quoteAuthorization
+              - quoteTotalPrice
+              - expectedQuoteCompletionDate
+              - validFor
+          requiredParameters:
+            - instantSyncQuote
+          required: true
+          examples:
+            - name: "CreateQuote"
+              content-type: "application/json"
+              description: "Creation of a new quote with POST operation"
+              request:
+                file: "./documentation/operation-samples/Quote_create_request.sample.json"
+                description: "POST Quote request example - only a subset of quote attributes are used in this example"
+              response:
+                file: "./documentation/operation-samples/Quote_create_response.sample.json"
+                description: "POST Quote response description."
+        PATCH:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+              - creationDate
+          required: true
+          examples:
+            - name: "updateQuote_using_json-patch+query"
+              content-type: "application/json-patch+json"
+              description: "Update a quote using json-patch"
+              request:
+                file: "./documentation/operation-samples/Quote_partialupdate_1_request.sample.json"
+                description: "PATCH Quote request leveraging json-patch+json application example"
+              response:
+                file: "./documentation/operation-samples/Quote_partialupdate_1_response.sample.json"
+                description: "Quote representation."
+            - name: "updateQuote_using_merge-patch+json"
+              content-type: "application/merge-patch+json"
+              description: "PATCH Quote request leveraging merge-patch+json application example"
+              request:
+                file: "./documentation/operation-samples/Quote_partialupdate_2_request.sample.json"
+                description: "PATCH Quote request leveraging merge-patch+json application example"
+              response:
+                file: "./documentation/operation-samples/Quote_partialupdate_1_response.sample.json"
+                description: "Quote representation."
+##      notifications:
+##        - create
+##        - attributeValueChange
+##        - stateChange
+##        - delete
+##        - informationRequired                
+    - name: QuoteCreateEvent
+      schema: "schemas/Tmf/Customer/Event/QuoteCreateEvent.schema.json#QuoteCreateEvent"
+      supportedHttpMethods:
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+          required: true
+          examples:
+            - name: "QuoteCreateEvent"
+              content-type: "application/json"
+              description: "Message example for QuoteCreateEvent event"
+              request:
+                file: "./documentation/operation-samples/QuoteCreateEvent_create_request.sample.json"
+                description: "Message example for QuoteCreateEvent event"
+##        GET:
+##          security:
+##            - OpenID: [read1, write1]
+##          required: true
+##          examples:
+##            - name: "retrieveById"
+##              content-type: "application/json"
+##              description: "Retrieve a quote from its identifier - only a subset of quote attributes (as defined in the API) are used in this example"
+##              response:
+##                file: "./documentation/operation-samples/Quote_retrieve_1_response.sample.json"
+##                description: "Retrieve a quote from its identifier - only a subset of quote attributes (as defined in the API) are used in this example."
+    - name: QuoteStateChangeEvent
+      schema: "schemas/Tmf/Customer/Event/QuoteStateChangeEvent.schema.json#QuoteStateChangeEvent"
+      supportedHttpMethods:
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+          examples:
+            - name: "QuoteStateChangeEvent"
+              content-type: "application/json"
+              description: "Message example for QuoteStateChangeEvent event"
+              request:
+                file: "./documentation/operation-samples/QuoteStateChangeEvent_create_request.sample.json"
+                description: "Message example for QuoteStateChangeEvent event"
+    - name: QuoteDeleteEvent
+      schema: "schemas/Tmf/Customer/Event/QuoteDeleteEvent.schema.json#QuoteDeleteEvent"
+      supportedHttpMethods:
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+          examples:
+            - name: "QuoteDeleteEvent"
+              content-type: "application/json"
+              description: "Message example for QuoteDeleteEvent event"
+              request:
+                file: "./documentation/operation-samples/QuoteDeleteEvent_create_request.sample.json"
+                description: "Message example for QuoteDeleteEvent event"
+    - name: QuoteInformationRequiredEvent
+      schema: "schemas/Tmf/Customer/Event/QuoteInformationRequiredEvent.schema.json#QuoteInformationRequiredEvent"
+      supportedHttpMethods:
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+          examples:
+            - name: "QuoteInformationRequiredEvent"
+              content-type: "application/json"
+              description: "Message example for QuoteInformationRequiredEvent event"
+              request:
+                file: "./documentation/operation-samples/QuoteInformationRequiredEvent_create_request.sample.json"
+                description: "Message example for QuoteInformationRequiredEvent event"
+    - name: QuoteAttributeValueChangeEvent
+      schema: "schemas/Tmf/Customer/Event/QuoteAttributeValueChangeEvent.schema.json#QuoteAttributeValueChangeEvent"
+      supportedHttpMethods:
+        POST:
+          parameterRestrictions:
+            excludedParameters:
+              - id
+              - href
+          examples:
+            - name: "QuoteAttributeValueChangeEvent"
+              content-type: "application/json"
+              description: "Message example for QuoteAttributeValueChangeEvent event"
+              request:
+                file: "./documentation/operation-samples/QuoteAttributeValueChangeEvent_create_request.sample.json"
+                description: "Message example for QuoteAttributeValueChangeEvent event"
+    - name: StringCharacteristic
+      schema: "schemas/Tmf/Common/StringCharacteristic.schema.json#StringCharacteristic"
+    - name: ObjectCharacteristic
+      schema: "schemas/Tmf/Common/ObjectCharacteristic.schema.json#ObjectCharacteristic"
+##    - name: FloatCharacteristic
+##    schema: "schemas/Tmf/Common/FloatCharacteristic.schema.json#FloatCharacteristic"
+    - name: BooleanCharacteristic
+      schema: "schemas/Tmf/Common/BooleanCharacteristic.schema.json#BooleanCharacteristic"
+    - name: NumberCharacteristic
+      schema: "schemas/Tmf/Common/NumberCharacteristic.schema.json#NumberCharacteristic"
+    - name: IntegerCharacteristic
+      schema: "schemas/Tmf/Common/IntegerCharacteristic.schema.json#IntegerCharacteristic"
+    - name: StringArrayCharacteristic
+      schema: "schemas/Tmf/Common/StringArrayCharacteristic.schema.json#StringArrayCharacteristic"
+    - name: ObjectArrayCharacteristic
+      schema: "schemas/Tmf/Common/ObjectArrayCharacteristic.schema.json#ObjectArrayCharacteristic"     
+    - name: BooleanArrayCharacteristic
+      schema: "schemas/Tmf/Common/BooleanArrayCharacteristic.schema.json#BooleanArrayCharacteristic"
+    - name: NumberArrayCharacteristic
+      schema: "schemas/Tmf/Common/NumberArrayCharacteristic.schema.json#NumberArrayCharacteristic"      
+    - name: IntegerArrayCharacteristic
+      schema: "schemas/Tmf/Common/IntegerArrayCharacteristic.schema.json#IntegerArrayCharacteristic"        
+    - name: EmailContactMedium
+      schema: "schemas/Tmf/Common/EmailContactMedium.schema.json#EmailContactMedium"
+    - name: PhoneContactMedium
+      schema: "schemas/Tmf/Common/PhoneContactMedium.schema.json#PhoneContactMedium"
+    - name: ProductRelationshipType
+      schema: "schemas/Tmf/Product/ProductRelationshipType.schema.json#ProductRelationshipType"
+    - name: GeographicAddressValue
+      schema: "schemas/Tmf/Common/GeographicAddressValue.schema.json#GeographicAddressValue"
